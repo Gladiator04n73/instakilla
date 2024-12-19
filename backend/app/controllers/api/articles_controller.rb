@@ -2,27 +2,27 @@
     class Api::ArticlesController < ApplicationController
 
         def index
-            article = Article.all
-            render json: { article: article.as_json }
+          @article = Article.all
+            render json: @article
         end
 
         
         def show
-            article = Article.find(params[:id])
-            render json: { article: article.as_json }
+          @article = Article.find(params[:id])
+            render json: @article
           rescue ActiveRecord::RecordNotFound
             render json: { error: 'Статья не найдена' }, status: :not_found
         end
 
       def create
         
-        user = User.find(params[:user_id])
-        article = user.articles.new(article_params) 
+        @user = User.find(params[:user_id])
+        @article = @user.articles.new(article_params) 
 
-        article.status = 'Default_status'
-        article.body = "Default_body"
+        @article.status = 'Default_status'
+        @article.body = "Default_body"
         if article.save!
-          render json: { article: article.as_json }, status: :created
+          render json: @article, status: :created
         else
           render json: { error: "НЕТ ЗАПИСЕЙ"}
         end
@@ -30,9 +30,9 @@
       
 
       def update
-        article = Article.find(params[:id])
-        if article.update(article_params)
-          render json: { article: article.as_json }, status: :ok
+        @article = Article.find(params[:id])
+        if @article.update(article_params)
+          render json: @article, status: :ok
         else
           render json: { error: "НЕТ ЗАПИСЕЙ"}
         end
@@ -40,8 +40,8 @@
 
       def destroy
         if params[:id].present?
-          article = Article.find(params[:id])
-          article.destroy
+          @article = Article.find(params[:id])
+          @article.destroy
           render json: { message: "Статья удалена" }, status: :ok
         else
           render json: { error: "Не указан идентификатор статьи" }, status: :bad_request
@@ -51,8 +51,8 @@
       end
 
       def delete
-        article = Article.find(params[:id])
-        article.delete
+        @article = Article.find(params[:id])
+        @article.delete
         render json: { message: "Статья удалена" }, status: :ok
       end
       
